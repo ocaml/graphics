@@ -36,3 +36,13 @@ On Windows
 ----------
 
 On Windows graphics uses the native Win32 API.
+
+Examples
+--------
+
+The `examples/` directory contains a few examples. You can run them
+with:
+
+- `dune exec examples/graph_example.exe`
+- `dune exec examples/graph_test.exe`
+- `dune exec examples/sorts.exe`
