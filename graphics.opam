@@ -1,0 +1,20 @@
+opam-version: "2.0"
+maintainer: "jeremie@dimino.org"
+authors: ["Jérémie Dimino <jeremie@dimino.org>"]
+homepage: "https://github.com/ocaml/graphics"
+bug-reports: "https://github.com/ocaml/graphics/issues"
+doc: "https://ocaml.github.io/graphics/"
+dev-repo: "git+https://github.com/ocaml/graphics.git"
+license: "LGPL 2.1 with linking exception"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "dune" {build & >= "1.6"}
+]
+synopsis: "Graphic library"
+description: """
+This package provives the graphic library that used to be distributed with
+ocaml up to 4.08.
+"""
