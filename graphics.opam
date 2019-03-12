@@ -13,8 +13,11 @@ depends: [
   "ocaml" {>= "4.06.1"}
   "dune" {build & >= "1.6"}
 ]
-synopsis: "Graphic library"
+synopsis: "Graphics library"
 description: """
-This package provives the graphic library that used to be distributed with
-ocaml up to 4.08.
+The graphics library provides a set of portable drawing
+primitives. Drawing takes place in a separate window that is created
+when Graphics.open_graph is called.
+
+This library used to be distributed with OCaml up to OCaml 4.08.
 """
