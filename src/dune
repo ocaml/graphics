@@ -21,6 +21,7 @@ let () =
 (library
  (public_name graphics)
  (wrapped false)
+ (synopsis "Portable drawing primitives")
  (c_names %s)
  (c_library_flags %s))
 

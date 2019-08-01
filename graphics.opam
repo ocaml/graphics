@@ -1,19 +1,20 @@
 opam-version: "2.0"
 maintainer: "jeremie@dimino.org"
+bug-reports: "https://github.com/ocaml/graphics/issues"
+dev-repo: "git+https://github.com/ocaml/graphics.git"
 authors: ["Jérémie Dimino <jeremie@dimino.org>"]
 homepage: "https://github.com/ocaml/graphics"
-bug-reports: "https://github.com/ocaml/graphics/issues"
+license: "LGPL-2.1 with OCaml linking exception"
 doc: "https://ocaml.github.io/graphics/"
-dev-repo: "git+https://github.com/ocaml/graphics.git"
-license: "LGPL 2.1 with linking exception"
 build: [
   ["dune" "build" "-p" name "-j" jobs]
 ]
 depends: [
-  "ocaml" {>= "4.06.1"}
-  "dune" {build & >= "1.6"}
+  "conf-libX11"
+  "ocaml" {>= "4.09.0~~"}
+  "dune" {>= "1.6"}
 ]
-synopsis: "Graphics library"
+synopsis: "The OCaml graphics library"
 description: """
 The graphics library provides a set of portable drawing
 primitives. Drawing takes place in a separate window that is created
