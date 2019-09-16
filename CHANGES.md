@@ -1,7 +1,7 @@
-4.09.0 (unreleased)
--------------------
+5.0.0 (16/09/2019)
+------------------
 
-Planned initial release for when OCaml 4.09.0 is released.
+Initial release for OCaml >= 4.09.0.
 
 2.0.0 (12/03/2019)
 ------------------
