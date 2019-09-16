@@ -9,7 +9,9 @@ when Graphics.open_graph is called.
 This library used to be distributed with OCaml up to OCaml 4.08.
 """
 maintainer: ["jeremie@dimino.org" "david.allsopp@metastack.com"]
-authors: ["Xavier Leroy"]
+authors: [
+  "Xavier Leroy" "Jun Furuse" "J-M Geffroy" "Jacob Navia" "Pierre Weis"
+]
 license: "LGPL-2.1 with OCaml linking exception"
 homepage: "https://github.com/ocaml/graphics"
 doc: "https://ocaml.github.io/graphics/"

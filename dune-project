@@ -6,7 +6,11 @@
 
 (license "LGPL-2.1 with OCaml linking exception")
 (maintainers jeremie@dimino.org david.allsopp@metastack.com)
-(authors "Xavier Leroy")
+(authors "Xavier Leroy"
+         "Jun Furuse"
+         "J-M Geffroy"
+         "Jacob Navia"
+         "Pierre Weis")
 (source (github ocaml/graphics))
 (documentation https://ocaml.github.io/graphics/)
 
