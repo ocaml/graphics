@@ -18,7 +18,6 @@
 exception Graphic_failure of string
 (** Raised by the functions below when they encounter an error. *)
 
-
 (** {1 Initializations} *)
 
 val open_graph : string -> unit
@@ -80,18 +79,23 @@ val foreground : color
    {!Graphics.clear_graph} fills the screen with the [background] color.
    The initial drawing color is [foreground]. *)
 
-
 (** {7 Some predefined colors} *)
 
 val black : color
-val white : color
-val red : color
-val green : color
-val blue : color
-val yellow : color
-val cyan : color
-val magenta : color
 
+val white : color
+
+val red : color
+
+val green : color
+
+val blue : color
+
+val yellow : color
+
+val cyan : color
+
+val magenta : color
 
 (** {1 Point and line drawing} *)
 
@@ -208,7 +212,6 @@ external text_size : string -> int * int = "caml_gr_text_size"
 (** Return the dimensions of the given text, if it were drawn with
    the current font and size. *)
 
-
 (** {1 Filling} *)
 
 val fill_rect : int -> int -> int -> int -> unit
@@ -231,7 +234,6 @@ val fill_ellipse : int -> int -> int -> int -> unit
 val fill_circle : int -> int -> int -> unit
 (** Fill a circle with the current color. The
    parameters are the same as for {!Graphics.draw_circle}. *)
-
 
 (** {1 Images} *)
 
@@ -279,27 +281,23 @@ external blit_image : image -> int -> int -> unit = "caml_gr_blit_image"
    equal to those of the image. Pixels that were transparent in
    [img] are left unchanged. *)
 
-
 (** {1 Mouse and keyboard events} *)
 
 type status =
-  { mouse_x : int;              (** X coordinate of the mouse *)
-    mouse_y : int;              (** Y coordinate of the mouse *)
-    button : bool;              (** true if a mouse button is pressed *)
-    keypressed : bool;          (** true if a key has been pressed *)
-    key : char;                 (** the character for the key pressed *)
-  }
+  { mouse_x: int  (** X coordinate of the mouse *)
+  ; mouse_y: int  (** Y coordinate of the mouse *)
+  ; button: bool  (** true if a mouse button is pressed *)
+  ; keypressed: bool  (** true if a key has been pressed *)
+  ; key: char  (** the character for the key pressed *) }
 (** To report events. *)
 
-
-type event =
-    Button_down                 (** A mouse button is pressed *)
-  | Button_up                   (** A mouse button is released *)
-  | Key_pressed                 (** A key is pressed *)
-  | Mouse_motion                (** The mouse is moved *)
-  | Poll                        (** Don't wait; return immediately *)
 (** To specify events to wait for. *)
-
+type event =
+  | Button_down  (** A mouse button is pressed *)
+  | Button_up  (** A mouse button is released *)
+  | Key_pressed  (** A key is pressed *)
+  | Mouse_motion  (** The mouse is moved *)
+  | Poll  (** Don't wait; return immediately *)
 
 external wait_next_event : event list -> status = "caml_gr_wait_event"
 (** Wait until one of the events specified in the given event list
@@ -338,7 +336,6 @@ val key_pressed : unit -> bool
 (** Return [true] if a keypress is available; that is, if [read_key]
    would not block. *)
 
-
 (** {1 Sound} *)
 
 external sound : int -> int -> unit = "caml_gr_sound"
@@ -374,14 +371,12 @@ external synchronize : unit -> unit = "caml_gr_synchronize"
    copying the contents of the backing store onto the graphics
    window. *)
 
-
 external display_mode : bool -> unit = "caml_gr_display_mode"
 (** Set display mode on or off. When turned on, drawings are done
    in the graphics window; when turned off, drawings do not affect
    the graphics window.  This occurs independently of
    drawing into the backing store (see the function {!Graphics.remember_mode}
    below). Default display mode is on. *)
-
 
 external remember_mode : bool -> unit = "caml_gr_remember_mode"
 (** Set remember mode on or off. When turned on, drawings are done

@@ -2,6 +2,7 @@
 (name graphics)
 
 (generate_opam_files true)
+(using fmt 1.2)
 
 (license "LGPL-2.1 with OCaml linking exception")
 (maintainers jeremie@dimino.org david.allsopp@metastack.com)
