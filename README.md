@@ -8,6 +8,13 @@ OCaml up to OCaml 4.08.
 
 ![Screenshot](libgraph.png)
 
+Documentation
+-------------
+
+The API is documented 
+[here](https://ocaml.github.io/graphics/graphics/Graphics/index.html)
+and as comments in the source file `src/graphics.mli`.
+
 On Unix
 -------
 
