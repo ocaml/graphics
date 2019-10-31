@@ -157,13 +157,18 @@ static value caml_gr_wait_allocate_result(int mouse_x, int mouse_y, int button,
 
 static value caml_gr_wait_event_poll(void)
 {
+  XEvent grevent;
   int mouse_x, mouse_y, button, key, keypressed;
   Window rootwin, childwin;
   int root_x, root_y, win_x, win_y;
   unsigned int modifiers;
   unsigned int i;
 
-  caml_process_pending_signals ();
+  /* Process pending X events before polling */
+  while (XCheckMaskEvent(caml_gr_display, -1 /*all events*/, &grevent)) {
+    caml_gr_handle_event(&grevent);
+  }
+  /* Poll the mouse state */
   if (XQueryPointer(caml_gr_display, caml_gr_window.win,
                     &rootwin, &childwin,
                     &root_x, &root_y, &win_x, &win_y,
