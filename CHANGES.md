@@ -1,3 +1,10 @@
+5.1.0 (unreleased)
+------------------
+
+- Use pkg-config to query x11 compilation and linking flags + hardcode
+  a few pkg-config paths for OSX (#..., fixes #16, @diml)
+
+
 5.0.0 (16/09/2019)
 ------------------
 
