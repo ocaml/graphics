@@ -29,23 +29,19 @@ external sigio_signal : unit -> int = "caml_gr_sigio_signal"
 external sigio_handler : int -> unit = "caml_gr_sigio_handler"
 
 let unix_open_graph arg =
-  Sys.set_signal (sigio_signal ()) (Sys.Signal_handle sigio_handler) ;
+  Sys.set_signal (sigio_signal ()) (Sys.Signal_handle sigio_handler);
   raw_open_graph arg
 
 let unix_close_graph () =
-  Sys.set_signal (sigio_signal ()) Sys.Signal_ignore ;
+  Sys.set_signal (sigio_signal ()) Sys.Signal_ignore;
   raw_close_graph ()
 
 let open_graph, close_graph =
   match Sys.os_type with
-  | "Unix" | "Cygwin" ->
-      (unix_open_graph, unix_close_graph)
-  | "Win32" ->
-      (raw_open_graph, raw_close_graph)
-  | "MacOS" ->
-      (raw_open_graph, raw_close_graph)
-  | _ ->
-      invalid_arg ("Graphics: unknown OS type: " ^ Sys.os_type)
+  | "Unix" | "Cygwin" -> (unix_open_graph, unix_close_graph)
+  | "Win32" -> (raw_open_graph, raw_close_graph)
+  | "MacOS" -> (raw_open_graph, raw_close_graph)
+  | _ -> invalid_arg ("Graphics: unknown OS type: " ^ Sys.os_type)
 
 external set_window_title : string -> unit = "caml_gr_set_window_title"
 
@@ -67,9 +63,12 @@ external synchronize : unit -> unit = "caml_gr_synchronize"
 
 let auto_synchronize = function
   | true ->
-      display_mode true ; remember_mode true ; synchronize ()
+      display_mode true;
+      remember_mode true;
+      synchronize ()
   | false ->
-      display_mode false ; remember_mode true
+      display_mode false;
+      remember_mode true
 
 (* Colors *)
 
@@ -135,12 +134,12 @@ let draw_poly, draw_poly_line =
   let dodraw close_flag points =
     if Array.length points > 0 then (
       let savex, savey = current_point () in
-      moveto (fst points.(0)) (snd points.(0)) ;
+      moveto (fst points.(0)) (snd points.(0));
       for i = 1 to Array.length points - 1 do
         let x, y = points.(i) in
         lineto x y
-      done ;
-      if close_flag then lineto (fst points.(0)) (snd points.(0)) ;
+      done;
+      if close_flag then lineto (fst points.(0)) (snd points.(0));
       moveto savex savey )
   in
   (dodraw true, dodraw false)
@@ -149,8 +148,9 @@ let draw_segments segs =
   let savex, savey = current_point () in
   for i = 0 to Array.length segs - 1 do
     let x1, y1, x2, y2 = segs.(i) in
-    moveto x1 y1 ; lineto x2 y2
-  done ;
+    moveto x1 y1;
+    lineto x2 y2
+  done;
   moveto savex savey
 
 external raw_draw_arc : int -> int -> int -> int -> int -> int -> unit
@@ -219,31 +219,37 @@ external blit_image : image -> int -> int -> unit = "caml_gr_blit_image"
 
 let get_image x y w h =
   let image = create_image w h in
-  blit_image image x y ; image
+  blit_image image x y;
+  image
 
 (* Events *)
 
-type status =
-  {mouse_x: int; mouse_y: int; button: bool; keypressed: bool; key: char}
+type status = {
+  mouse_x : int;
+  mouse_y : int;
+  button : bool;
+  keypressed : bool;
+  key : char;
+}
 
 type event = Button_down | Button_up | Key_pressed | Mouse_motion | Poll
 
 external wait_next_event : event list -> status = "caml_gr_wait_event"
 
 let mouse_pos () =
-  let e = wait_next_event [Poll] in
+  let e = wait_next_event [ Poll ] in
   (e.mouse_x, e.mouse_y)
 
 let button_down () =
-  let e = wait_next_event [Poll] in
+  let e = wait_next_event [ Poll ] in
   e.button
 
 let read_key () =
-  let e = wait_next_event [Key_pressed] in
+  let e = wait_next_event [ Key_pressed ] in
   e.key
 
 let key_pressed () =
-  let e = wait_next_event [Poll] in
+  let e = wait_next_event [ Poll ] in
   e.keypressed
 
 let loop_at_exit events handler =
@@ -255,10 +261,10 @@ let loop_at_exit events handler =
           handler e
         done
       with
-      | Exit ->
-          close_graph ()
+      | Exit -> close_graph ()
       | e ->
-          close_graph () ; raise e)
+          close_graph ();
+          raise e)
 
 (*** Sound *)
 
@@ -288,7 +294,7 @@ let spline a b c d =
       let i = middle b' c' in
       spl (spl accu a a' b' i) i c' d' d
   in
-  spl [a] a b c d
+  spl [ a ] a b c d
 
 let curveto b c ((x, y) as d) =
   let float_point (x, y) = (float_of_int x, float_of_int y) in
@@ -299,5 +305,5 @@ let curveto b c ((x, y) as d) =
       (float_point (current_point ()))
       (float_point b) (float_point c) (float_point d)
   in
-  draw_poly_line (Array.of_list (List.map int_point points)) ;
+  draw_poly_line (Array.of_list (List.map int_point points));
   moveto x y

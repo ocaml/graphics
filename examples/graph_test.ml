@@ -64,8 +64,8 @@ set_color foreground
 
 let dashes y =
   for i = 1 to 100 do
-    plot y (2 * i) ;
-    plot y (3 * i) ;
+    plot y (2 * i);
+    plot y (3 * i);
     plot y (4 * i)
   done
 
@@ -81,7 +81,10 @@ dashes (sz - 20)
 (* Drawing chars *)
 
 ;;
-draw_char 'C' ; draw_char 'a' ; draw_char 'm' ; draw_char 'l'
+draw_char 'C';
+draw_char 'a';
+draw_char 'm';
+draw_char 'l'
 
 (* More and more red enlarging squares *)
 
@@ -91,12 +94,16 @@ moveto 10 10
 ;;
 set_line_width 5
 
-let carre c = rlineto 0 c ; rlineto c 0 ; rlineto 0 (-c) ; rlineto (-c) 0
+let carre c =
+  rlineto 0 c;
+  rlineto c 0;
+  rlineto 0 (-c);
+  rlineto (-c) 0
 
 ;;
 for i = 1 to 10 do
-  moveto (10 * i) (10 * i) ;
-  set_color (rgb (155 + (10 * i)) 0 0) ;
+  moveto (10 * i) (10 * i);
+  set_color (rgb (155 + (10 * i)) 0 0);
   carre (10 * i)
 done
 
@@ -243,9 +250,13 @@ go_legend ()
 draw_string "Graphics (OCaml)"
 
 (* Pie parts in different colors. *)
-let draw_green_string s = set_color green ; draw_string s
+let draw_green_string s =
+  set_color green;
+  draw_string s
 
-let draw_red_string s = set_color red ; draw_string s
+let draw_red_string s =
+  set_color red;
+  draw_string s
 
 ;;
 moveto 120 210
@@ -254,21 +265,21 @@ moveto 120 210
 set_color red
 
 ;;
-fill_arc 150 260 25 25 60 300 ;
-draw_green_string "A " ;
-draw_red_string "red" ;
-draw_green_string " pie." ;
-set_text_size 5 ;
-moveto 180 240 ;
-draw_red_string "A " ;
-draw_green_string "green" ;
+fill_arc 150 260 25 25 60 300;
+draw_green_string "A ";
+draw_red_string "red";
+draw_green_string " pie.";
+set_text_size 5;
+moveto 180 240;
+draw_red_string "A ";
+draw_green_string "green";
 draw_red_string " slice."
 
 ;;
-set_color green ;
-fill_arc 200 260 25 25 0 60 ;
-set_color black ;
-set_line_width 2 ;
+set_color green;
+fill_arc 200 260 25 25 0 60;
+set_color black;
+set_line_width 2;
 draw_arc 200 260 27 27 0 60
 
 (* Should do nothing since this is a line *)
@@ -277,7 +288,7 @@ draw_arc 200 260 27 27 0 60
 set_color red
 
 ;;
-fill_poly [|(40, 10); (150, 70); (150, 10); (40, 10)|]
+fill_poly [| (40, 10); (150, 70); (150, 10); (40, 10) |]
 
 ;;
 set_color blue
@@ -290,24 +301,26 @@ let draw_poly v =
     let x0, y0 = current_point () in
     let p0 = v.(0) in
     let x, y = p0 in
-    moveto x y ;
+    moveto x y;
     for i = 1 to l - 1 do
       let x, y = v.(i) in
       lineto x y
-    done ;
-    lineto x y ;
+    done;
+    lineto x y;
     moveto x0 y0 )
 
 ;;
-draw_poly [|(150, 10); (150, 70); (260, 10); (150, 10)|]
+draw_poly [| (150, 10); (150, 70); (260, 10); (150, 10) |]
 
 (* Filling polygones. *)
 (* Two equilateral triangles, one red and one blue, and their inside
    filled in black. *)
 let equi x y l =
-  [| (x - (l / 2), y)
-   ; (x, y + int_of_float (float_of_int l *. (sqrt 3.0 /. 2.0)))
-   ; (x + (l / 2), y) |]
+  [|
+    (x - (l / 2), y);
+    (x, y + int_of_float (float_of_int l *. (sqrt 3.0 /. 2.0)));
+    (x + (l / 2), y);
+  |]
 
 ;;
 set_color black
@@ -334,7 +347,9 @@ draw_poly (equi 300 44 (-40))
 
 ;;
 let x, y = current_point () in
-rlineto 10 10 ; moveto x y ; moveto 395 100
+rlineto 10 10;
+moveto x y;
+moveto 395 100
 
 ;;
 let x, y = current_point () in
@@ -360,9 +375,9 @@ draw_ellipse x y 25 10
 (* Drawing and filling arcs. *)
 
 let draw_arc_ellipse x y r1 r2 =
-  set_color green ;
-  draw_arc x y r1 r2 60 120 ;
-  set_color black ;
+  set_color green;
+  draw_arc x y r1 r2 60 120;
+  set_color black;
   draw_arc x y r1 r2 120 420
 
 ;;
@@ -380,9 +395,9 @@ let draw_arc_ellipses x y r1 r2 =
 draw_arc_ellipses 20 128 15 50
 
 let fill_arc_ellipse x y r1 r2 c1 c2 =
-  set_color c1 ;
-  fill_arc x y r1 r2 60 120 ;
-  set_color c2 ;
+  set_color c1;
+  fill_arc x y r1 r2 60 120;
+  set_color c2;
   fill_arc x y r1 r2 120 420
 
 let fill_arc_ellipses x y r1 r2 =
@@ -390,12 +405,12 @@ let fill_arc_ellipses x y r1 r2 =
   let c1 = ref black and c2 = ref yellow in
   let exchange r1 r2 =
     let tmp = !r1 in
-    r1 := !r2 ;
+    r1 := !r2;
     r2 := tmp
   in
   for i = r1 / (2 * step) downto 10 do
     for j = r2 / (2 * step) downto 30 do
-      exchange c1 c2 ;
+      exchange c1 c2;
       fill_arc_ellipse x y (3 * i) (3 * j) !c1 !c2
     done
   done
@@ -432,4 +447,4 @@ draw_circle 400 240 20
 synchronize ()
 
 ;;
-ignore (wait_next_event [Key_pressed])
+ignore (wait_next_event [ Key_pressed ])

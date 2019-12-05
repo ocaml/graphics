@@ -29,12 +29,12 @@ external close_subwindow : window_id -> unit = "caml_gr_close_subwindow"
 
 let open_subwindow ~x ~y ~width ~height =
   let wid = open_subwindow x y width height in
-  Hashtbl.add subwindows wid () ;
+  Hashtbl.add subwindows wid ();
   wid
 
 let close_subwindow wid =
   if Hashtbl.mem subwindows wid then (
-    close_subwindow wid ;
+    close_subwindow wid;
     Hashtbl.remove subwindows wid )
   else
     raise

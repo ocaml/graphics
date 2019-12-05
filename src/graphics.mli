@@ -283,12 +283,13 @@ external blit_image : image -> int -> int -> unit = "caml_gr_blit_image"
 
 (** {1 Mouse and keyboard events} *)
 
-type status =
-  { mouse_x: int  (** X coordinate of the mouse *)
-  ; mouse_y: int  (** Y coordinate of the mouse *)
-  ; button: bool  (** true if a mouse button is pressed *)
-  ; keypressed: bool  (** true if a key has been pressed *)
-  ; key: char  (** the character for the key pressed *) }
+type status = {
+  mouse_x : int;  (** X coordinate of the mouse *)
+  mouse_y : int;  (** Y coordinate of the mouse *)
+  button : bool;  (** true if a mouse button is pressed *)
+  keypressed : bool;  (** true if a key has been pressed *)
+  key : char;  (** the character for the key pressed *)
+}
 (** To report events. *)
 
 (** To specify events to wait for. *)
