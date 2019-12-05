@@ -3,30 +3,33 @@
 open StdLabels
 open Jbuild_plugin.V1
 
-let subdir, link_flags =
+let subdir =
   match List.assoc "os_type" ocamlc_config with
-  | "Win32" -> "win32", "-lkernel32 -lgdi32 -luser32"
-| _ -> "unix", "-lX11"
+  | "Win32" -> "win32"
+  | _ -> "unix"
 
 let c_names =
-  Sys.readdir subdir
-  |> Array.to_list
-  |> List.filter ~f:(fun fn ->
-      Filename.check_suffix fn ".c")
+  Sys.readdir subdir |> Array.to_list
+  |> List.filter ~f:(fun fn -> Filename.check_suffix fn ".c")
   |> List.map ~f:Filename.chop_extension
   |> List.sort ~cmp:String.compare
 
 let () =
-  Printf.ksprintf send {|
+  Printf.ksprintf send
+    {|
 (library
  (public_name graphics)
  (wrapped false)
  (synopsis "Portable drawing primitives")
  (c_names %s)
- (c_library_flags %s))
+ (c_flags (:include cflags))
+ (c_library_flags (:include libs)))
 
 (copy_files# %s/*)
+
+(rule
+ (targets cflags libs)
+ (action (run discover/discover.exe)))
 |}
     (String.concat c_names ~sep:" ")
-    link_flags
     subdir
