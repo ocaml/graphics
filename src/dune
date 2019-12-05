@@ -21,8 +21,10 @@ let () =
  (public_name graphics)
  (wrapped false)
  (synopsis "Portable drawing primitives")
- (c_names %s)
- (c_flags (:include cflags))
+ (foreign_stubs
+  (language c)
+  (names %s)
+  (flags (:include cflags)))
  (c_library_flags (:include libs)))
 
 (copy_files# %s/*)

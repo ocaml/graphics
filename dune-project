@@ -1,8 +1,7 @@
-(lang dune 1.11)
+(lang dune 2.0)
 (name graphics)
 
 (generate_opam_files true)
-(using fmt 1.2)
 
 (license "LGPL-2.1 with OCaml linking exception")
 (maintainers jeremie@dimino.org david.allsopp@metastack.com)
