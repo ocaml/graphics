@@ -16,7 +16,9 @@
 (package
  (name graphics)
  (depends
+   "dune-configurator"
    "conf-libX11"
+   "conf-pkg-config"
   ("ocaml" (>= "4.09.0~~")))
  (synopsis "The OCaml graphics library")
  (description "\
