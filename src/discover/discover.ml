@@ -3,7 +3,7 @@ module C = Configurator.V1
 type os = Win32 | Darwin | Other
 
 let os c =
-  let win32 = C.ocaml_config_var c "os_tyle" = Some "Win32" in
+  let win32 = C.ocaml_config_var c "os_type" = Some "Win32" in
   if win32 then Win32
   else
     match C.Process.run c "uname" [ "-s" ] with
