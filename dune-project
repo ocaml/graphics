@@ -1,4 +1,4 @@
-(lang dune 2.0)
+(lang dune 2.1)
 (name graphics)
 
 (generate_opam_files true)
@@ -17,8 +17,8 @@
  (name graphics)
  (depends
    "dune-configurator"
-   "conf-libX11"
-   "conf-pkg-config"
+  ("conf-libX11" (<> :os win32))
+  ("conf-pkg-config" (<> :os win32))
   ("ocaml" (>= "4.09.0~~")))
  (synopsis "The OCaml graphics library")
  (description "\
