@@ -6,7 +6,7 @@ primitives. Drawing takes place in a separate window that is created
 when Graphics.open_graph is called. It used to be distributed with
 OCaml up to OCaml 4.08.
 
-![Screenshot](libgraph.svg)
+![Screenshot](libgraph.png)
 
 Documentation
 -------------
