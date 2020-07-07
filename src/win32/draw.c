@@ -433,7 +433,7 @@ struct image {
 #define Height(i) (((struct image *)Data_custom_val(i))->h)
 #define Data(i) (((struct image *)Data_custom_val(i))->data)
 #define Mask(i) (((struct image *)Data_custom_val(i))->mask)
-#define Max_image_mem 500000
+#define Max_image_mem 2000000
 
 static void finalize_image (value i)
 {
