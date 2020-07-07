@@ -17,6 +17,7 @@
 #include "image.h"
 #include <caml/alloc.h>
 #include <caml/custom.h>
+#include <caml/version.h>
 
 static void caml_gr_free_image(value im)
 {
@@ -38,8 +39,12 @@ static struct custom_operations image_ops = {
 
 value caml_gr_new_image(int w, int h)
 {
+#if OCAML_VERSION < 40800
   value res = caml_alloc_custom(&image_ops, sizeof(struct grimage),
                            w * h, Max_image_mem);
+#else
+  value res = caml_alloc_custom_mem(&image_ops, sizeof(struct grimage), w * h);
+#endif
   Width_im(res) = w;
   Height_im(res) = h;
   Data_im(res) = XCreatePixmap(caml_gr_display, caml_gr_window.win, w, h,
