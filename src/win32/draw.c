@@ -20,6 +20,7 @@
 #include "libgraph.h"
 #include "caml/custom.h"
 #include "caml/memory.h"
+#include "caml/version.h"
 
 HDC gcMetaFile;
 int grdisplay_mode;
@@ -464,8 +465,12 @@ CAMLprim value caml_gr_create_image(value vw, value vh)
         cbm = CreateCompatibleBitmap(grwindow.gc, w, h);
         if (cbm == NULL)
                 gr_fail("create_image: cannot create bitmap", 0);
+#if OCAML_VERSION < 40800
         res = caml_alloc_custom(&image_ops, sizeof(struct image),
                 w * h, Max_image_mem);
+#else
+        res = caml_alloc_custom_mem(&image_ops, sizeof(struct image), w * h);
+#endif
         if (res) {
                 Width (res) = w;
                 Height (res) = h;
