@@ -17,10 +17,10 @@ homepage: "https://github.com/ocaml/graphics"
 doc: "https://ocaml.github.io/graphics/"
 bug-reports: "https://github.com/ocaml/graphics/issues"
 depends: [
-  "dune" {>= "2.0"}
+  "dune" {>= "2.1"}
   "dune-configurator"
-  "conf-libX11"
-  "conf-pkg-config"
+  "conf-libX11" {os != "win32"}
+  "conf-pkg-config" {os != "win32"}
   "ocaml" {>= "4.09.0~~"}
 ]
 build: [
