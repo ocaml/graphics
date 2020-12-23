@@ -73,6 +73,6 @@ typedef struct tagWindow {
 } GR_WINDOW;
 
 extern GR_WINDOW grwindow;
-HFONT CreationFont(char *name);
+HFONT CreationFont(const char *name);
 extern void caml_gr_init_event_queue(void);
 extern void caml_gr_handle_event(UINT msg, WPARAM wParam, LPARAM lParam);

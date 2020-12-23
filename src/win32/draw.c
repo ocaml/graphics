@@ -323,7 +323,7 @@ CAMLprim value caml_gr_get_mousey(value unit)
 }
 
 
-static void gr_font(char *fontname)
+static void gr_font(const char *fontname)
 {
         HFONT hf = CreationFont(fontname);
 

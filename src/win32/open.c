@@ -42,7 +42,7 @@ static BOOL gr_initialized = 0;
 CAMLprim value caml_gr_clear_graph(value unit);
 HANDLE hInst;
 
-HFONT CreationFont(char *name)
+HFONT CreationFont(const char *name)
 {
    LOGFONTA CurrentFont;
    memset(&CurrentFont, 0, sizeof(LOGFONTA));
