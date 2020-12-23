@@ -1,3 +1,9 @@
+Next
+----
+
+- Fix configurator detection on native Windows (#19, @fdopen)
+- Use caml_alloc_custom_mem when available (#23, @hhugo)
+
 5.1.0 (05/12/2019)
 ------------------
 
