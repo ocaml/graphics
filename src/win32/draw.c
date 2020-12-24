@@ -23,8 +23,6 @@
 #include "caml/version.h"
 
 HDC gcMetaFile;
-int grdisplay_mode;
-int grremember_mode;
 GR_WINDOW grwindow;
 
 static void GetCurrentPosition(HDC hDC,POINT *pt)
@@ -323,7 +321,7 @@ CAMLprim value caml_gr_get_mousey(value unit)
 }
 
 
-static void gr_font(char *fontname)
+static void gr_font(const char *fontname)
 {
         HFONT hf = CreationFont(fontname);
 

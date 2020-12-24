@@ -4,6 +4,7 @@ Next
 - Fix configurator detection on native Windows (#19, @fdopen)
 - Use caml_alloc_custom_mem when available (#23, @hhugo)
 - Fix windows dependencies (#20, @diml)
+- Safe-string updates for native Windows (#28, fixes #27, @dra27)
 
 5.1.0 (05/12/2019)
 ------------------
