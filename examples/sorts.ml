@@ -105,15 +105,15 @@ let display functs nelts maxval =
     let name, funct, x, y, w, h = functs.(i) in
     let gc = initialize name a maxval x y w h in
     ignore
-      ( Thread.create
-          (fun () ->
-            funct gc;
-            Mutex.lock lock_finished;
-            incr num_finished;
-            Mutex.unlock lock_finished;
-            Condition.signal cond_finished)
-          ()
-        : Thread.t )
+      (Thread.create
+         (fun () ->
+           funct gc;
+           Mutex.lock lock_finished;
+           incr num_finished;
+           Mutex.unlock lock_finished;
+           Condition.signal cond_finished)
+         ()
+        : Thread.t)
   done;
   Mutex.lock lock_finished;
   while !num_finished < Array.length functs do
@@ -159,7 +159,7 @@ let bubble_sort gc =
     for i = 0 to Array.length gc.array - 2 do
       if gc.array.(i + 1) < gc.array.(i) then (
         exchange gc i (i + 1);
-        ordered := false )
+        ordered := false)
     done
   done
 
@@ -206,7 +206,7 @@ let quick_sort gc =
       done;
       exchange gc !i hi;
       quick lo (!i - 1);
-      quick (!i + 1) hi )
+      quick (!i + 1) hi)
   in
   quick 0 (Array.length gc.array - 1)
 
@@ -225,10 +225,10 @@ let merge_sort gc =
     | v1 :: r1, v2 :: r2 ->
         if v1 < v2 then (
           assign gc i v1;
-          merge (i + 1) r1 l2 )
+          merge (i + 1) r1 l2)
         else (
           assign gc i v2;
-          merge (i + 1) l1 r2 )
+          merge (i + 1) l1 r2)
   in
   let rec msort start len =
     if len < 2 then ()
@@ -261,21 +261,21 @@ let animate () =
   let _, h = text_size prompt in
   let sx = size_x () / 2 and sy = (size_y () - h) / 3 in
   ignore
-    ( display
-        [|
-          ("Bubble", bubble_sort, 0, h, sx, sy);
-          ("Insertion", insertion_sort, 0, h + sy, sx, sy);
-          ("Selection", selection_sort, 0, h + (2 * sy), sx, sy);
-          ("Quicksort", quick_sort, sx, h, sx, sy);
-          (* "Heapsort", heap_sort, sx, h+sy, sx, sy; **)
-          ("Mergesort", merge_sort, sx, h + (2 * sy), sx, sy);
-        |]
-        100 1000
-      : char );
+    (display
+       [|
+         ("Bubble", bubble_sort, 0, h, sx, sy);
+         ("Insertion", insertion_sort, 0, h + sy, sx, sy);
+         ("Selection", selection_sort, 0, h + (2 * sy), sx, sy);
+         ("Quicksort", quick_sort, sx, h, sx, sy);
+         (* "Heapsort", heap_sort, sx, h+sy, sx, sy; **)
+         ("Mergesort", merge_sort, sx, h + (2 * sy), sx, sy);
+       |]
+       100 1000
+      : char);
   close_graph ()
 
 let _ =
   if !Sys.interactive then ()
   else (
     animate ();
-    exit 0 )
+    exit 0)
