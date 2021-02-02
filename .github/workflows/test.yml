@@ -23,13 +23,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Use OCaml ${{ matrix.ocaml-version }}
         uses: avsm/setup-ocaml@v1
         with:
           ocaml-version: ${{ matrix.ocaml-version }}
-      - name: Install XQuartz on macOS
-        if: runner.os == 'macOS'
-        run: brew cask install xquartz
+
       - run: opam pin add graphics.dev . --no-action
       - run: opam depext graphics --yes
       - run: opam install . --deps-only
