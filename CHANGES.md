@@ -1,5 +1,5 @@
-Next
-----
+5.1.1 (02/02/2021)
+------------------
 
 - Fix configurator detection on native Windows (#19, @fdopen)
 - Use caml_alloc_custom_mem when available (#23, @hhugo)
