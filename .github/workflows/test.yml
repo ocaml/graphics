@@ -30,11 +30,7 @@ jobs:
           ocaml-version: ${{ matrix.ocaml-version }}
 
       - run: opam pin add graphics.dev . --no-action
-
       - run: opam depext graphics --yes
-
       - run: opam install . --deps-only
-
       - run: opam exec -- dune build @install
-
       - run: opam exec -- dune runtest
