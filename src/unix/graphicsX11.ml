@@ -35,7 +35,7 @@ let open_subwindow ~x ~y ~width ~height =
 let close_subwindow wid =
   if Hashtbl.mem subwindows wid then (
     close_subwindow wid;
-    Hashtbl.remove subwindows wid )
+    Hashtbl.remove subwindows wid)
   else
     raise
       (Graphics.Graphic_failure ("close_subwindow: no such subwindow: " ^ wid))

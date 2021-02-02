@@ -307,7 +307,7 @@ let draw_poly v =
       lineto x y
     done;
     lineto x y;
-    moveto x0 y0 )
+    moveto x0 y0)
 
 ;;
 draw_poly [| (150, 10); (150, 70); (260, 10); (150, 10) |]
@@ -318,8 +318,7 @@ draw_poly [| (150, 10); (150, 70); (260, 10); (150, 10) |]
 let equi x y l =
   [|
     (x - (l / 2), y);
-    (x, y + int_of_float (float_of_int l *. (sqrt 3.0 /. 2.0)));
-    (x + (l / 2), y);
+    (x, y + int_of_float (float_of_int l *. (sqrt 3.0 /. 2.0))); (x + (l / 2), y);
   |]
 
 ;;

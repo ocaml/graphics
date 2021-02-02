@@ -17,7 +17,7 @@ let from_pkg_config c =
   | Some pc -> (
       match C.Pkg_config.query pc ~package:"x11" with
       | None -> fallback
-      | Some { cflags; libs } -> (cflags, libs) )
+      | Some { cflags; libs } -> (cflags, libs))
 
 let () =
   C.main ~name:"discover" (fun c ->

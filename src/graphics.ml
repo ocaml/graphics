@@ -140,7 +140,7 @@ let draw_poly, draw_poly_line =
         lineto x y
       done;
       if close_flag then lineto (fst points.(0)) (snd points.(0));
-      moveto savex savey )
+      moveto savex savey)
   in
   (dodraw true, dodraw false)
 
