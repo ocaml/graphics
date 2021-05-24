@@ -1,3 +1,8 @@
+5.1.2 (unreleased)
+------------------
+
+- Fix PKG_CONFIG_PATH for latest macOS xquartz (#36, @smorimoto)
+
 5.1.1 (02/02/2021)
 ------------------
 
