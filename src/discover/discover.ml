@@ -27,7 +27,7 @@ let () =
         | Win32 -> ([], [ "-lkernel32"; "-lgdi32"; "-luser32" ])
         | Darwin ->
             let pkg_config_path =
-              "/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig"
+              "/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig"
             in
             let pkg_config_path =
               match Sys.getenv "PKG_CONFIG_PATH" with
