@@ -1,4 +1,4 @@
-(lang dune 2.1)
+(lang dune 2.7)
 (name graphics)
 
 (generate_opam_files true)
