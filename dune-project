@@ -1,9 +1,9 @@
-(lang dune 2.1)
+(lang dune 2.7)
 (name graphics)
 
 (generate_opam_files true)
 
-(license "LGPL-2.1 with OCaml linking exception")
+(license "LGPL-2.1-only with OCaml-LGPL-linking-exception")
 (maintainers jeremie@dimino.org david.allsopp@metastack.com)
 (authors "Xavier Leroy"
          "Jun Furuse"
