@@ -65,7 +65,7 @@ static void caml_gr_enqueue_event(int kind, LPARAM mouse_xy,
   ev->kind = kind;
   ev->mouse_x = GET_X_LPARAM(mouse_xy);
   ev->mouse_y = GET_Y_LPARAM(mouse_xy);
-  ev->button = (button != 0);
+  ev->button = (unsigned char) button;
   ev->key = key;
   caml_gr_tail = (caml_gr_tail + 1) % SIZE_QUEUE;
   /* If queue was full, it now appears empty;
@@ -83,19 +83,23 @@ void caml_gr_handle_event(UINT msg, WPARAM wParam, LPARAM lParam)
 {
   switch (msg) {
   case WM_LBUTTONDOWN:
+    last_button |= 1;
   case WM_RBUTTONDOWN:
+    last_button |= 4;
   case WM_MBUTTONDOWN:
-    last_button = 1;
+    last_button |= 2;
     last_pos = lParam;
-    caml_gr_enqueue_event(EVENT_BUTTON_DOWN, lParam, 1, 0);
+    caml_gr_enqueue_event(EVENT_BUTTON_DOWN, lParam, last_button, 0);
     break;
 
   case WM_LBUTTONUP:
+    last_button &= ~1;
   case WM_RBUTTONUP:
+    last_button &= ~4;
   case WM_MBUTTONUP:
-    last_button = 0;
+    last_button &= ~2;
     last_pos = lParam;
-    caml_gr_enqueue_event(EVENT_BUTTON_UP, lParam, 0, 0);
+    caml_gr_enqueue_event(EVENT_BUTTON_UP, lParam, last_button, 0);
     break;
 
   case WM_CHAR:
@@ -117,12 +121,17 @@ static value caml_gr_wait_allocate_result(int mouse_x, int mouse_y,
                                           int button,
                                           int keypressed, int key)
 {
-  value res = caml_alloc_small(5, 0);
+  value res = caml_alloc_small(10, 0);
   Field(res, 0) = Val_int(mouse_x);
   Field(res, 1) = Val_int(grwindow.height - 1 - mouse_y);
   Field(res, 2) = Val_bool(button);
-  Field(res, 3) = Val_bool(keypressed);
-  Field(res, 4) = Val_int(key & 0xFF);
+  Field(res, 3) = Val_bool(button & 1);
+  Field(res, 4) = Val_bool(button & 2);
+  Field(res, 5) = Val_bool(button & 4);
+  Field(res, 6) = Val_bool(button & 8);
+  Field(res, 7) = Val_bool(button & 16);
+  Field(res, 8) = Val_bool(keypressed);
+  Field(res, 9) = Val_int(key & 0xFF);
   return res;
 }
 
