@@ -140,6 +140,12 @@ void caml_gr_handle_event(XEvent * event)
     caml_gr_enqueue_event(event->type, event->xmotion.x, event->xmotion.y,
                      BUTTON_STATE(event->xmotion.state), 0);
     break;
+
+  case ClientMessage:
+    if ((Atom) event->xclient.data.l[0] == caml_wm_delete_window) {
+      caml_gr_close_graph();
+    }
+    break;
   }
 }
 
@@ -165,8 +171,10 @@ static value caml_gr_wait_event_poll(void)
   unsigned int i;
 
   /* Process pending X events before polling */
-  while (XCheckMaskEvent(caml_gr_display, -1 /*all events*/, &grevent)) {
+  while (XPending(caml_gr_display)) {
+    XNextEvent(caml_gr_display, &grevent);
     caml_gr_handle_event(&grevent);
+    caml_gr_check_open();
   }
   /* Poll the mouse state */
   if (XQueryPointer(caml_gr_display, caml_gr_window.win,
@@ -232,8 +240,9 @@ static value caml_gr_wait_event_blocking(long mask)
   /* Replenish our event queue from that of X11 */
   caml_gr_ignore_sigio = True;
   while (1) {
-    if (XCheckMaskEvent(caml_gr_display, -1 /*all events*/, &event)) {
+    if (XPending(caml_gr_display)) {
       /* One event available: add it to our queue */
+      XNextEvent(caml_gr_display, &event);
       caml_gr_handle_event(&event);
       /* See if we now have a matching event */
       res = caml_gr_wait_event_in_queue(mask);
@@ -245,8 +254,8 @@ static value caml_gr_wait_event_blocking(long mask)
       caml_enter_blocking_section();
       select(FD_SETSIZE, &readfds, NULL, NULL, NULL);
       caml_leave_blocking_section();
-      caml_gr_check_open(); /* in case another thread closed the display */
     }
+    caml_gr_check_open(); /* in case the display was closed in the meantime */
   }
   caml_gr_ignore_sigio = False;
 

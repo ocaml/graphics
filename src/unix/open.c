@@ -43,6 +43,7 @@ long caml_gr_selected_events;
 Bool caml_gr_ignore_sigio = False;
 static Bool caml_gr_initialized = False;
 static char * window_name = NULL;
+Atom caml_wm_delete_window;
 
 static int caml_gr_error_handler(Display *display, XErrorEvent *error);
 static int caml_gr_ioerror_handler(Display *display);
@@ -121,6 +122,12 @@ value caml_gr_open_graph(value arg)
     /* What not use XSetWMProperties? */
     XSetStandardProperties(caml_gr_display, caml_gr_window.win, p, p,
                            None, NULL, 0, &hints);
+    /* Handle "please delete window" requests from window manager */
+    caml_wm_delete_window =
+      XInternAtom(caml_gr_display, "WM_DELETE_WINDOW", False);
+      XSetWMProtocols(caml_gr_display, caml_gr_window.win,
+                      &caml_wm_delete_window, 1);
+
     caml_gr_window.gc = XCreateGC(caml_gr_display, caml_gr_window.win, 0, NULL);
     XSetBackground(caml_gr_display, caml_gr_window.gc, caml_gr_background);
     XSetForeground(caml_gr_display, caml_gr_window.gc, caml_gr_black);
@@ -353,7 +360,8 @@ value caml_gr_sigio_handler(void)
   XEvent grevent;
 
   if (caml_gr_initialized && !caml_gr_ignore_sigio) {
-    while (XCheckMaskEvent(caml_gr_display, -1 /*all events*/, &grevent)) {
+    while (XPending(caml_gr_display)) {
+      XNextEvent(caml_gr_display, &grevent);
       caml_gr_handle_event(&grevent);
     }
   }
