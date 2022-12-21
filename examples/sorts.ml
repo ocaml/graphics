@@ -20,21 +20,15 @@ open Graphics
 (* Information on a given sorting process *)
 
 type graphic_context = {
-  array : int array;
-  (* Data to sort *)
-  x0 : int;
-  (* X coordinate, lower left corner *)
-  y0 : int;
-  (* Y coordinate, lower left corner *)
-  width : int;
-  (* Width in pixels *)
-  height : int;
-  (* Height in pixels *)
-  nelts : int;
-  (* Number of elements in the array *)
-  maxval : int;
-  (* Max val in the array + 1 *)
-  rad : int; (* Dimension of the rectangles *)
+  id: int;                (* Identifier *)
+  array : int array;      (* Data to sort *)
+  x0 : int;               (* X coordinate, lower left corner *)
+  y0 : int;               (* Y coordinate, lower left corner *)
+  width : int;            (* Width in pixels *)
+  height : int;           (* Height in pixels *)
+  nelts : int;            (* Number of elements in the array *)
+  maxval : int;           (* Max val in the array + 1 *)
+  rad : int               (* Dimension of the rectangles *)
 }
 
 (* Array assignment and exchange with screen update *)
@@ -63,11 +57,12 @@ let exchange gc i j =
 
 (* Construction of a graphic context *)
 
-let initialize name array maxval x y w h =
+let initialize i name array maxval x y w h =
   let _, label_height = text_size name in
   let rad = ((w - 2) / Array.length array) - 1 in
   let gc =
     {
+      id = i;
       array = Array.copy array;
       x0 = x + 1;
       (* Leave one pixel left for Y axis *)
@@ -91,62 +86,129 @@ let initialize name array maxval x y w h =
   done;
   gc
 
+(* Synchronization barrier *)
+
+type barrier = {
+  lock: Mutex.t;
+  mutable participants: int; (* number of participating threads *)
+  mutable flag: bool;   (* true = can go ahead, false = should wait *)
+  mutable arrive: int;  (* number of threads that arrived *)
+  mutable leave: int;   (* number of threads that left *)
+  restart: Condition.t; (* signaled when status becomes false again *)
+  all_arrived: Condition.t; (* signaled when arrive = participants *)
+  all_left: Condition.t (* signaled when leave = participants *)
+}
+
+let b = {
+  lock = Mutex.create();
+  participants = 0;
+  flag = true;
+  arrive = 0;
+  leave = 0;
+  restart = Condition.create();
+  all_arrived = Condition.create();
+  all_left = Condition.create()
+}
+
+let barrier_init num_participants =
+  Mutex.lock b.lock;
+  b.participants <- num_participants;
+  b.leave <- num_participants;
+  Mutex.unlock b.lock
+
+let barrier_enter () =
+  Mutex.lock b.lock;
+  if b.arrive = 0 then begin
+    (* Wait for all to leave before clearing flag *)
+    while b.leave < b.participants do Condition.wait b.all_left b.lock done;
+    (* First arriver clears flag *)
+    b.flag <- false
+  end;
+  b.arrive <- b.arrive + 1;
+  if b.arrive = b.participants then begin
+    (* Last arriver signals the manager, who will set the flag *)
+    Condition.signal b.all_arrived
+  end;
+  (* Wait for flag *)
+  while not b.flag do Condition.wait b.restart b.lock done;
+  b.leave <- b.leave + 1;
+  if b.leave = b.participants then Condition.broadcast b.all_left;
+  Mutex.unlock b.lock
+    
+let barrier_terminate () =
+  Mutex.lock b.lock;
+  b.participants <- b.participants - 1;
+  if b.arrive = b.participants then Condition.signal b.all_arrived;
+  Mutex.unlock b.lock
+
+let barrier_wait_all () =
+  Mutex.lock b.lock;
+  while b.arrive <> b.participants do Condition.wait b.all_arrived b.lock done
+  (* keep the lock *)
+
+let barrier_restart_all () =
+  (* lock must be held *)
+  b.arrive <- 0;
+  b.leave <- 0;
+  b.flag <- true;
+  Condition.broadcast b.restart;
+  Mutex.unlock b.lock
+
+(* To stop all threads cleanly *)
+
+let terminated = ref false
+
+exception Terminated
+
 (* Main animation function *)
+
+let delta_t = 0.02
 
 let display functs nelts maxval =
   let a = Array.make nelts 0 in
   for i = 0 to nelts - 1 do
     a.(i) <- Random.int maxval
   done;
-  let num_finished = ref 0 in
-  let lock_finished = Mutex.create () in
-  let cond_finished = Condition.create () in
-  for i = 0 to Array.length functs - 1 do
-    let name, funct, x, y, w, h = functs.(i) in
-    let gc = initialize name a maxval x y w h in
-    ignore
-      (Thread.create
-         (fun () ->
-           funct gc;
-           Mutex.lock lock_finished;
-           incr num_finished;
-           Mutex.unlock lock_finished;
-           Condition.signal cond_finished)
-         ()
-        : Thread.t)
+  barrier_init (Array.length functs);
+  terminated := false;
+  let th =
+    Array.mapi
+      (fun i (name, funct, x, y, w, h) ->
+        let gc = initialize i name a maxval x y w h in
+        Thread.create
+          (fun () -> try funct gc; barrier_terminate() with Terminated -> ())
+          ())
+      functs in
+  let delay = ref (3.0 *. delta_t) in
+  while not !terminated do
+    barrier_wait_all();
+    if b.participants = 0 then begin
+      ignore (read_key());
+      terminated := true
+    end;
+    Unix.sleepf !delay;
+    if key_pressed() then begin
+      match read_key() with
+      | 'q'|'Q' ->
+          terminated := true
+      | '0'..'9' as c ->
+          delay := float (Char.code c - 48) *. delta_t
+      | _ ->
+          ()
+    end;
+    barrier_restart_all()
   done;
-  Mutex.lock lock_finished;
-  while !num_finished < Array.length functs do
-    Condition.wait cond_finished lock_finished
-  done;
-  Mutex.unlock lock_finished;
-  read_key ()
+  Array.iter Thread.join th
 
-(*****
-  let delay = ref 0 in
-  try
-    while true do
-      let gc = Queue.take q in
-        begin match gc.action with
-          Finished -> ()
-        | Pause f ->
-            gc.action <- f ();
-            for i = 0 to !delay do () done;
-            Queue.add gc q
-        end;
-      if key_pressed() then begin
-        match read_key() with
-          'q'|'Q' ->
-            raise Exit
-        | '0'..'9' as c ->
-            delay := (Char.code c - 48) * 500
-        | _ ->
-            ()
-      end
-    done
-  with Exit -> ()
-     | Queue.Empty -> read_key(); ()
-*****)
+(* Comparison functions that synchronize *)
+
+let sync () = 
+  if !terminated then raise Terminated else barrier_enter ()
+
+let (<?) x y = sync(); x < y
+let (>?) x y = sync(); x > y
+let (<=?) x y = sync(); x <= y
+let (>=?) x y = sync(); x >= y
 
 (* The sorting functions. *)
 
@@ -157,7 +219,7 @@ let bubble_sort gc =
   while not !ordered do
     ordered := true;
     for i = 0 to Array.length gc.array - 2 do
-      if gc.array.(i + 1) < gc.array.(i) then (
+      if gc.array.(i + 1) <? gc.array.(i) then (
         exchange gc i (i + 1);
         ordered := false)
     done
@@ -169,7 +231,7 @@ let insertion_sort gc =
   for i = 1 to Array.length gc.array - 1 do
     let val_i = gc.array.(i) in
     let j = ref (i - 1) in
-    while !j >= 0 && val_i < gc.array.(!j) do
+    while !j >= 0 && val_i <? gc.array.(!j) do
       assign gc (!j + 1) gc.array.(!j);
       decr j
     done;
@@ -182,7 +244,7 @@ let selection_sort gc =
   for i = 0 to Array.length gc.array - 1 do
     let min = ref i in
     for j = i + 1 to Array.length gc.array - 1 do
-      if gc.array.(j) < gc.array.(!min) then min := j
+      if gc.array.(j) <? gc.array.(!min) then min := j
     done;
     exchange gc i !min
   done
@@ -196,10 +258,10 @@ let quick_sort gc =
       let j = ref hi in
       let pivot = gc.array.(hi) in
       while !i < !j do
-        while !i < hi && gc.array.(!i) <= pivot do
+        while !i < hi && gc.array.(!i) <=? pivot do
           incr i
         done;
-        while !j > lo && gc.array.(!j) >= pivot do
+        while !j > lo && gc.array.(!j) >=? pivot do
           decr j
         done;
         if !i < !j then exchange gc !i !j
@@ -209,6 +271,32 @@ let quick_sort gc =
       quick (!i + 1) hi)
   in
   quick 0 (Array.length gc.array - 1)
+
+(* Heap sort *)
+
+let rec heapify gc n i =
+  let l = 2 * i + 1 and r = 2 * i + 2 in
+  (* Find largest among root, left child, right child *)
+  let largest = ref i in
+  if l < n && gc.array.(l) >? gc.array.(!largest) then largest := l;
+  if r < n && gc.array.(r) >? gc.array.(!largest) then largest := r;
+  if !largest <> i then begin
+    (* Swap and continue heapify-ing *)
+    exchange gc i !largest;
+    heapify gc n !largest
+  end
+
+let heap_sort gc =
+  let n = Array.length gc.array in
+  (* Build max heap *)
+  for i = n / 2 - 1 downto 0 do
+    heapify gc n i
+  done;
+  (* Repeatedly extract max element and restore heap structure *)
+  for i = n - 1 downto 1 do
+    exchange gc 0 i;
+    heapify gc i 0
+  done
 
 (* Merge sort *)
 
@@ -223,7 +311,7 @@ let merge_sort gc =
         assign gc i v1;
         merge (i + 1) r1 l2
     | v1 :: r1, v2 :: r2 ->
-        if v1 < v2 then (
+        if v1 <? v2 then (
           assign gc i v1;
           merge (i + 1) r1 l2)
         else (
@@ -245,37 +333,27 @@ let merge_sort gc =
 (* Main program *)
 
 let animate () =
+  Random.self_init();
   open_graph "";
   moveto 0 0;
-  draw_string "Press a key to start...";
-  let seed = ref 0 in
-  while not (key_pressed ()) do
-    incr seed
-  done;
+  draw_string "Resize window, then press a key to start...";
   ignore (read_key () : char);
-  Random.init !seed;
   clear_graph ();
   let prompt = "0: fastest ... 9: slowest, press 'q' to quit" in
   moveto 0 0;
   draw_string prompt;
   let _, h = text_size prompt in
   let sx = size_x () / 2 and sy = (size_y () - h) / 3 in
-  ignore
-    (display
+  display
        [|
          ("Bubble", bubble_sort, 0, h, sx, sy);
          ("Insertion", insertion_sort, 0, h + sy, sx, sy);
          ("Selection", selection_sort, 0, h + (2 * sy), sx, sy);
          ("Quicksort", quick_sort, sx, h, sx, sy);
-         (* "Heapsort", heap_sort, sx, h+sy, sx, sy; **)
+         ("Heapsort", heap_sort, sx, h+sy, sx, sy);
          ("Mergesort", merge_sort, sx, h + (2 * sy), sx, sy);
        |]
-       100 1000
-      : char);
+       100 1000;
   close_graph ()
 
-let _ =
-  if !Sys.interactive then ()
-  else (
-    animate ();
-    exit 0)
+let _ = animate ()
