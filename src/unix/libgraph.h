@@ -53,8 +53,8 @@ extern int caml_gr_bits_per_pixel;
 #define min(a,b) ((a) < (b) ? (a) : (b))
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
-#define DEFAULT_SCREEN_WIDTH 600
-#define DEFAULT_SCREEN_HEIGHT 450
+#define DEFAULT_SCREEN_WIDTH 1024
+#define DEFAULT_SCREEN_HEIGHT 768
 #define BORDER_WIDTH 2
 #define DEFAULT_WINDOW_NAME "OCaml graphics"
 #define DEFAULT_SELECTED_EVENTS \
