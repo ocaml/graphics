@@ -40,6 +40,7 @@ extern int caml_gr_color;        /* Current *CAML* drawing color (can be -1) */
 extern XFontStruct * caml_gr_font;    /* Current font */
 extern long caml_gr_selected_events;  /* Events we are interested in */
 extern Bool caml_gr_ignore_sigio;     /* Whether to consume events on sigio */
+extern Atom caml_wm_delete_window;    /* "WM_DELETE_WINDOW" atom */
 
 extern Bool caml_gr_direct_rgb;
 extern int caml_gr_byte_order;
@@ -87,3 +88,4 @@ extern void caml_gr_handle_event(XEvent *e);
 extern void caml_gr_init_color_cache(void);
 extern void caml_gr_init_direct_rgb_to_pixel(void);
 extern value caml_gr_id_of_window( Window w );
+extern value caml_gr_close_graph(void);
