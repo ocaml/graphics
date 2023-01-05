@@ -94,8 +94,6 @@ void caml_gr_handle_event(XEvent * event)
       XFillRectangle(caml_gr_display, newbstore.win, newbstore.gc,
                      0, 0, newbstore.w, newbstore.h);
       XSetForeground(caml_gr_display, newbstore.gc, caml_gr_color);
-      if (caml_gr_font != NULL)
-        XSetFont(caml_gr_display, newbstore.gc, caml_gr_font->fid);
 
       /* Copy the old backing store into the new one */
       XCopyArea(caml_gr_display, caml_gr_bstore.win, newbstore.win,

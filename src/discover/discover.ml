@@ -11,13 +11,20 @@ let os c =
     | _ -> Other
 
 let from_pkg_config c =
-  let fallback = ([], [ "-lX11" ]) in
+  let fallback = ([], [ "-lX11"; "-lXft" ]) in
   match C.Pkg_config.get c with
   | None -> fallback
-  | Some pc -> (
-      match C.Pkg_config.query pc ~package:"x11" with
-      | None -> fallback
-      | Some { cflags; libs } -> (cflags, libs))
+  | Some pc ->
+      let packages = [("x11","-lX11"); ("xft", "-lXft")] in
+      let cflags, libs =
+      packages
+      |> List.map (fun (package, fallback) ->
+          match C.Pkg_config.query pc ~package with
+          | None -> [], [fallback]
+          | Some { cflags; libs } -> cflags, libs)
+      |> List.split
+      in
+      List.concat cflags, List.concat libs
 
 let () =
   C.main ~name:"discover" (fun c ->
