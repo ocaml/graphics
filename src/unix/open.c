@@ -125,8 +125,8 @@ value caml_gr_open_graph(value arg)
     /* Handle "please delete window" requests from window manager */
     caml_wm_delete_window =
       XInternAtom(caml_gr_display, "WM_DELETE_WINDOW", False);
-      XSetWMProtocols(caml_gr_display, caml_gr_window.win,
-                      &caml_wm_delete_window, 1);
+    XSetWMProtocols(caml_gr_display, caml_gr_window.win,
+                    &caml_wm_delete_window, 1);
 
     caml_gr_window.gc = XCreateGC(caml_gr_display, caml_gr_window.win, 0, NULL);
     XSetBackground(caml_gr_display, caml_gr_window.gc, caml_gr_background);
