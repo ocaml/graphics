@@ -74,9 +74,170 @@ let auto_synchronize = function
 
 type color = int
 
+type color_scheme =
+  | Blank
+  | Red of int
+  | Orange of int
+  | Yellow of int
+  | LightGreen of int
+  | Green of int
+  | BlueGreen of int
+  | Skyblue of int
+  | LightBlue of int
+  | Blue of int
+  | Purple of int
+  | Pink of int
+  | RedPink of int
+  | BlackWhite of int
+
 let rgb r g b = (r lsl 16) + (g lsl 8) + b
 
 external set_color : color -> unit = "caml_gr_set_color"
+
+let schme_to_color = function
+  | Blank -> -1
+  | Red 1 -> rgb 255 204 204
+  | Red 2 -> rgb 255 153 153
+  | Red 3 -> rgb 255 102 102
+  | Red 4 -> rgb 255 51 51
+  | Red 5 -> rgb 255 0 0
+  | Red 6 -> rgb 204 0 0
+  | Red 7 -> rgb 153 0 0
+  | Red 8 -> rgb 102 0 0
+  | Red 9 -> rgb 51 0 0
+  | Red _ -> failwith "Red color scheme int must be between 1 and 9 inclusive."
+  | Orange 1 -> rgb 255 229 204
+  | Orange 2 -> rgb 255 204 153
+  | Orange 3 -> rgb 255 178 102
+  | Orange 4 -> rgb 255 153 51
+  | Orange 5 -> rgb 255 128 0
+  | Orange 6 -> rgb 204 102 0
+  | Orange 7 -> rgb 153 76 0
+  | Orange 8 -> rgb 102 51 0
+  | Orange 9 -> rgb 51 25 0
+  | Orange _ ->
+      failwith "Orange color scheme int must be between 1 and 9 inclusive."
+  | Yellow 1 -> rgb 255 255 204
+  | Yellow 2 -> rgb 255 255 153
+  | Yellow 3 -> rgb 255 255 102
+  | Yellow 4 -> rgb 255 255 51
+  | Yellow 5 -> rgb 255 255 0
+  | Yellow 6 -> rgb 204 204 0
+  | Yellow 7 -> rgb 153 153 0
+  | Yellow 8 -> rgb 102 102 0
+  | Yellow 9 -> rgb 51 51 0
+  | Yellow _ ->
+      failwith "Yellow color scheme int must be between 1 and 9 inclusive."
+  | LightGreen 1 -> rgb 229 255 204
+  | LightGreen 2 -> rgb 204 255 153
+  | LightGreen 3 -> rgb 178 255 102
+  | LightGreen 4 -> rgb 153 255 51
+  | LightGreen 5 -> rgb 128 255 0
+  | LightGreen 6 -> rgb 102 204 0
+  | LightGreen 7 -> rgb 76 153 0
+  | LightGreen 8 -> rgb 51 102 0
+  | LightGreen 9 -> rgb 25 51 0
+  | LightGreen _ ->
+      failwith "LightGreen color scheme int must be between 1 and 9 inclusive."
+  | Green 1 -> rgb 204 255 204
+  | Green 2 -> rgb 153 255 153
+  | Green 3 -> rgb 102 255 102
+  | Green 4 -> rgb 204 255 204
+  | Green 5 -> rgb 0 255 0
+  | Green 6 -> rgb 0 204 0
+  | Green 7 -> rgb 0 153 0
+  | Green 8 -> rgb 0 102 0
+  | Green 9 -> rgb 0 51 0
+  | Green _ ->
+      failwith "Green color scheme int must be between 1 and 9 inclusive."
+  | BlueGreen 1 -> rgb 204 255 229
+  | BlueGreen 2 -> rgb 153 255 204
+  | BlueGreen 3 -> rgb 102 255 178
+  | BlueGreen 4 -> rgb 51 255 153
+  | BlueGreen 5 -> rgb 0 255 128
+  | BlueGreen 6 -> rgb 0 204 102
+  | BlueGreen 7 -> rgb 0 153 76
+  | BlueGreen 8 -> rgb 0 102 51
+  | BlueGreen 9 -> rgb 0 51 25
+  | BlueGreen _ ->
+      failwith "BlueGreen color scheme int must be between 1 and 9 inclusive."
+  | Skyblue 1 -> rgb 204 255 255
+  | Skyblue 2 -> rgb 153 255 255
+  | Skyblue 3 -> rgb 102 255 255
+  | Skyblue 4 -> rgb 51 255 255
+  | Skyblue 5 -> rgb 0 255 255
+  | Skyblue 6 -> rgb 0 204 204
+  | Skyblue 7 -> rgb 0 153 153
+  | Skyblue 8 -> rgb 0 102 102
+  | Skyblue 9 -> rgb 0 51 51
+  | Skyblue _ ->
+      failwith "Skyblue color scheme int must be between 1 and 9 inclusive."
+  | LightBlue 1 -> rgb 204 229 255
+  | LightBlue 2 -> rgb 153 204 255
+  | LightBlue 3 -> rgb 102 178 255
+  | LightBlue 4 -> rgb 51 153 255
+  | LightBlue 5 -> rgb 0 128 255
+  | LightBlue 6 -> rgb 0 102 204
+  | LightBlue 7 -> rgb 0 76 153
+  | LightBlue 8 -> rgb 0 51 102
+  | LightBlue 9 -> rgb 0 25 51
+  | LightBlue _ ->
+      failwith "LightBlue color scheme int must be between 1 and 9 inclusive."
+  | Blue 1 -> rgb 204 204 255
+  | Blue 2 -> rgb 153 153 255
+  | Blue 3 -> rgb 102 102 255
+  | Blue 4 -> rgb 51 51 255
+  | Blue 5 -> rgb 0 0 255
+  | Blue 6 -> rgb 0 0 204
+  | Blue 7 -> rgb 0 0 153
+  | Blue 8 -> rgb 0 0 102
+  | Blue 9 -> rgb 0 0 51
+  | Blue _ ->
+      failwith "Blue color scheme int must be between 1 and 9 inclusive."
+  | Purple 1 -> rgb 229 204 255
+  | Purple 2 -> rgb 204 153 255
+  | Purple 3 -> rgb 178 102 255
+  | Purple 4 -> rgb 153 51 255
+  | Purple 5 -> rgb 127 0 255
+  | Purple 6 -> rgb 102 0 204
+  | Purple 7 -> rgb 76 0 153
+  | Purple 8 -> rgb 51 0 102
+  | Purple 9 -> rgb 25 0 51
+  | Purple _ ->
+      failwith "Purple color scheme int must be between 1 and 9 inclusive."
+  | Pink 1 -> rgb 255 204 255
+  | Pink 2 -> rgb 255 153 255
+  | Pink 3 -> rgb 255 102 255
+  | Pink 4 -> rgb 255 51 255
+  | Pink 5 -> rgb 255 0 255
+  | Pink 6 -> rgb 204 0 204
+  | Pink 7 -> rgb 153 0 153
+  | Pink 8 -> rgb 102 0 102
+  | Pink 9 -> rgb 51 0 51
+  | Pink _ ->
+      failwith "Pink color scheme int must be between 1 and 9 inclusive."
+  | RedPink 1 -> rgb 255 204 229
+  | RedPink 2 -> rgb 255 153 204
+  | RedPink 3 -> rgb 255 102 178
+  | RedPink 4 -> rgb 255 51 153
+  | RedPink 5 -> rgb 255 0 127
+  | RedPink 6 -> rgb 204 0 102
+  | RedPink 7 -> rgb 153 0 76
+  | RedPink 8 -> rgb 102 0 51
+  | RedPink 9 -> rgb 51 0 25
+  | RedPink _ ->
+      failwith "RedPink color scheme int must be between 1 and 9 inclusive."
+  | BlackWhite 1 -> rgb 255 255 255
+  | BlackWhite 2 -> rgb 224 224 224
+  | BlackWhite 3 -> rgb 192 192 192
+  | BlackWhite 4 -> rgb 160 160 160
+  | BlackWhite 5 -> rgb 128 128 128
+  | BlackWhite 6 -> rgb 96 96 96
+  | BlackWhite 7 -> rgb 64 64 64
+  | BlackWhite 8 -> rgb 32 32 32
+  | BlackWhite 9 -> rgb 0 0 0
+  | BlackWhite _ ->
+      failwith "BlackWhite color scheme int must be between 1 and 9 inclusive."
 
 let black = 0x000000
 

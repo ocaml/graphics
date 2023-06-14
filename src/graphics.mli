@@ -61,10 +61,33 @@ type color = int
    the red component, [GG] for the green component, [BB] for the
    blue component. *)
 
+type color_scheme =
+  | Blank
+  | Red of int
+  | Orange of int
+  | Yellow of int
+  | LightGreen of int
+  | Green of int
+  | BlueGreen of int
+  | Skyblue of int
+  | LightBlue of int
+  | Blue of int
+  | Purple of int
+  | Pink of int
+  | RedPink of int
+  | BlackWhite of int
+(** [color_scheme] is a representation of different colors. Int in each type
+    represents the gradient of the color, 1 being the lightest and 9 being the
+    darkest. Precondition: Int within the type must be between 1 and 9
+    inclusive. Reference: https://www.rapidtables.com/web/color/RGB_Color.html *)
+
 val rgb : int -> int -> int -> color
 (** [rgb r g b] returns the integer encoding the color with red
    component [r], green component [g], and blue component [b].
    [r], [g] and [b] are in the range [0..255]. *)
+
+val schme_to_color : color_scheme -> color
+(** [schme_to_color color_scheme] is the [color] representative of [color_scheme]. *)
 
 external set_color : color -> unit = "caml_gr_set_color"
 (** Set the current drawing color. *)
