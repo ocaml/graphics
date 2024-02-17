@@ -287,6 +287,11 @@ type status = {
   mouse_x : int;  (** X coordinate of the mouse *)
   mouse_y : int;  (** Y coordinate of the mouse *)
   button : bool;  (** true if a mouse button is pressed *)
+  button1 : bool; (** true if mouse button 1 is pressed *)
+  button2 : bool; (** true if mouse button 2 is pressed *)
+  button3 : bool; (** true if mouse button 3 is pressed *)
+  button4 : bool; (** true if mouse button 4 is pressed *)
+  button5 : bool; (** true if mouse button 5 is pressed *)
   keypressed : bool;  (** true if a key has been pressed *)
   key : char;  (** the character for the key pressed *)
 }
@@ -327,7 +332,10 @@ val mouse_pos : unit -> int * int
    [0..size_x()-1, 0..size_y()-1]. *)
 
 val button_down : unit -> bool
-(** Return [true] if the mouse button is pressed, [false] otherwise. *)
+(** Return [true] if a mouse button is pressed, [false] otherwise. *)
+
+val button_down_n : int -> bool
+(** Return [true] if this mouse button is pressed, [false] otherwise. *)
 
 val read_key : unit -> char
 (** Wait for a key to be pressed, and return the corresponding

@@ -49,7 +49,7 @@ static void caml_gr_enqueue_event(int kind, int mouse_x, int mouse_y,
   ev->kind = kind;
   ev->mouse_x = mouse_x;
   ev->mouse_y = mouse_y;
-  ev->button = (button != 0);
+  ev->button = (unsigned char) button;
   ev->key = key;
   caml_gr_tail = (caml_gr_tail + 1) % SIZE_QUEUE;
   /* If queue was full, it now appears empty; drop oldest entry from queue. */
@@ -57,7 +57,7 @@ static void caml_gr_enqueue_event(int kind, int mouse_x, int mouse_y,
 }
 
 #define BUTTON_STATE(state) \
-  ((state) & (Button1Mask|Button2Mask|Button3Mask|Button4Mask|Button5Mask))
+  ((state) & (Button1Mask|Button2Mask|Button3Mask|Button4Mask|Button5Mask)) >> 8
 
 void caml_gr_handle_event(XEvent * event)
 {
@@ -131,9 +131,14 @@ void caml_gr_handle_event(XEvent * event)
     }
 
   case ButtonPress:
+    caml_gr_enqueue_event(event->type, event->xbutton.x, event->xbutton.y,
+			  BUTTON_STATE(event->xbutton.state)
+			  | 1<<(event->xbutton.button-1),0);
+    break;
   case ButtonRelease:
     caml_gr_enqueue_event(event->type, event->xbutton.x, event->xbutton.y,
-                     event->type == ButtonPress, 0);
+			  BUTTON_STATE(event->xbutton.state)
+			  & ~(1 << (event->xbutton.button-1)), 0);
     break;
 
   case MotionNotify:
@@ -152,12 +157,17 @@ void caml_gr_handle_event(XEvent * event)
 static value caml_gr_wait_allocate_result(int mouse_x, int mouse_y, int button,
                                      int keypressed, int key)
 {
-  value res = caml_alloc_small(5, 0);
+  value res = caml_alloc_small(10, 0);
   Field(res, 0) = Val_int(mouse_x);
   Field(res, 1) = Val_int(mouse_y == -1 ? -1 : Wcvt(mouse_y));
   Field(res, 2) = Val_bool(button);
-  Field(res, 3) = Val_bool(keypressed);
-  Field(res, 4) = Val_int(key & 0xFF);
+  Field(res, 3) = Val_bool(button & 1);
+  Field(res, 4) = Val_bool(button & 2);
+  Field(res, 5) = Val_bool(button & 4);
+  Field(res, 6) = Val_bool(button & 8);
+  Field(res, 7) = Val_bool(button & 16);
+  Field(res, 8) = Val_bool(keypressed);
+  Field(res, 9) = Val_int(key & 0xFF);
   return res;
 }
 
