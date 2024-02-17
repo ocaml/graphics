@@ -83,21 +83,19 @@ void caml_gr_handle_event(UINT msg, WPARAM wParam, LPARAM lParam)
 {
   switch (msg) {
   case WM_LBUTTONDOWN:
-    last_button |= 1;
   case WM_RBUTTONDOWN:
-    last_button |= 4;
   case WM_MBUTTONDOWN:
-    last_button |= 2;
+    last_button |= (msg==WM_LBUTTONDOWN?~1:
+		    msg==WM_RBUTTONDOWN?~4:2);
     last_pos = lParam;
     caml_gr_enqueue_event(EVENT_BUTTON_DOWN, lParam, last_button, 0);
     break;
 
   case WM_LBUTTONUP:
-    last_button &= ~1;
   case WM_RBUTTONUP:
-    last_button &= ~4;
   case WM_MBUTTONUP:
-    last_button &= ~2;
+    last_button &= (msg==WM_LBUTTONUP?~1:
+		    msg==WM_RBUTTONUP?~4:2);
     last_pos = lParam;
     caml_gr_enqueue_event(EVENT_BUTTON_UP, lParam, last_button, 0);
     break;
