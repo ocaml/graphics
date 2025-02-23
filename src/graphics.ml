@@ -228,6 +228,11 @@ type status = {
   mouse_x : int;
   mouse_y : int;
   button : bool;
+  button1 : bool;
+  button2 : bool;
+  button3 : bool;
+  button4 : bool;
+  button5 : bool;
   keypressed : bool;
   key : char;
 }
@@ -243,6 +248,15 @@ let mouse_pos () =
 let button_down () =
   let e = wait_next_event [ Poll ] in
   e.button
+
+let button_down_n n =
+  let e = wait_next_event [ Poll ] in match n with
+  | 1 -> e.button1
+  | 2 -> e.button2
+  | 3 -> e.button3
+  | 4 -> e.button4
+  | 5 -> e.button5
+  | _ -> failwith "bad button number"
 
 let read_key () =
   let e = wait_next_event [ Key_pressed ] in
