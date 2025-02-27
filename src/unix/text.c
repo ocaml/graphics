@@ -69,6 +69,7 @@ static void caml_gr_draw_text(const char *txt, int len)
     XftDrawString8 (d, &xftcol, caml_gr_font,
         caml_gr_x, Bcvt(caml_gr_y) - caml_gr_font->descent + 1,
         (const FcChar8 *) txt, len);
+    XftDrawDestroy (d);
   }
   if (caml_gr_display_modeflag) {
     d = XftDrawCreate (caml_gr_display, caml_gr_window.win,
@@ -77,9 +78,8 @@ static void caml_gr_draw_text(const char *txt, int len)
         caml_gr_x, Wcvt(caml_gr_y) - caml_gr_font->descent + 1,
         (const FcChar8 *) txt, len);
     XFlush(caml_gr_display);
+    XftDrawDestroy (d);
   }
-
-  if (d) XftDrawDestroy (d);
 
   XftTextExtents8 (caml_gr_display, caml_gr_font,
       (const FcChar8 *) txt, len, &info);
