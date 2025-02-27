@@ -38,7 +38,7 @@ Bool caml_gr_display_modeflag;
 Bool caml_gr_remember_modeflag;
 int caml_gr_x, caml_gr_y;
 int caml_gr_color;
-extern XFontStruct * caml_gr_font;
+extern XftFont * caml_gr_font;
 long caml_gr_selected_events;
 Bool caml_gr_ignore_sigio = False;
 static Bool caml_gr_initialized = False;
@@ -224,7 +224,8 @@ value caml_gr_close_graph(void)
 #endif
     caml_gr_initialized = False;
     if (caml_gr_font != NULL) {
-      XFreeFont(caml_gr_display, caml_gr_font); caml_gr_font = NULL;
+      XftFontClose(caml_gr_display, caml_gr_font);
+      caml_gr_font = NULL;
     }
     XFreeGC(caml_gr_display, caml_gr_window.gc);
     XDestroyWindow(caml_gr_display, caml_gr_window.win);

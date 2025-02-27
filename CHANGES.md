@@ -1,3 +1,6 @@
+- Use modern X fonts instead of X core fonts (#38, @nchataing, Richard Jones)
+- Handle windows closing gracefully under X11 (#42, @xavierleroy)
+
 5.1.2 (24/05/2021)
 ------------------
 
