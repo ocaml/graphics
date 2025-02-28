@@ -18,6 +18,7 @@
  (depends
    "dune-configurator"
   ("conf-libX11" (<> :os win32))
+  ("conf-libXft" (<> :os win32))
   ("conf-pkg-config" (<> :os win32))
   ("ocaml" (>= "4.09.0~~")))
  (synopsis "The OCaml graphics library")
